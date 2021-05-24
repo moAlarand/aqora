@@ -31,6 +31,9 @@ interface State {
   peerIds: number[];
 }
 
+const YourAppId = "cb3b2d7d57ad429b89db7fcc5874dd1b";
+const YourToken="006cb3b2d7d57ad429b89db7fcc5874dd1bIAAKFbjJ0GNpeuDaezPuVfmmfTjp6B2ExAQM0d9JooniLgJkFYoAAAAAEABpDq0kM6KrYAEAAQAyoqtg";
+
 export default class App extends Component<Props, State> {
   _engine?: RtcEngine;
 
@@ -43,16 +46,19 @@ export default class App extends Component<Props, State> {
       joinSucceed: false,
       peerIds: [],
     };
-    if (Platform.OS === 'android') {
-      // Request required permissions from Android
-      requestCameraAndAudioPermission().then(() => {
-        console.log('requested!');
-      });
-    }
+
   }
 
   componentDidMount() {
-    this.init();
+    if (Platform.OS === 'android') {
+      // Request required permissions from Android
+      requestCameraAndAudioPermission().then(() => {
+        this.init();
+
+      });
+    }else{
+      this.init();
+    }
   }
 
   /**
@@ -160,16 +166,19 @@ export default class App extends Component<Props, State> {
   };
 
   _renderRemoteVideos = () => {
+
     const { peerIds } = this.state;
+    
     return (
       <ScrollView
         style={styles.remoteContainer}
         contentContainerStyle={{ paddingHorizontal: 2.5 }}
         horizontal={true}
       >
-        {peerIds.map((value) => {
+        {peerIds.map((value,index) => {
           return (
             <RtcRemoteView.SurfaceView
+              key={index}
               style={styles.remote}
               uid={value}
               channelId={this.state.channelName}
